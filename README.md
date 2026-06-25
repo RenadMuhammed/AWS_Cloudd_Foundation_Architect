@@ -1,138 +1,67 @@
-# 🚀 Lab 4: Working with Amazon EBS
+# 🚀 Lab 5: Amazon RDS
 
 ## 📖 Overview
-This lab demonstrates how to create, attach, configure, and manage an **Amazon Elastic Block Store (EBS)** volume for an Amazon EC2 instance. It also covers creating an EBS snapshot for backup and recovery purposes.
+
+This lab demonstrates how to create and configure an **Amazon RDS MySQL** database and connect it to an Amazon EC2 web application.
 
 ---
 
-## 🎯 Objectives
+## Task 1: Create a Security Group
 
-By the end of this lab, you will be able to:
+Create a **DB Security Group** and allow **MySQL (3306)** access from the **Web Security Group**.
 
-- Create a new Amazon EBS volume.
-- Attach the volume to an Amazon EC2 instance.
-- Connect to the EC2 instance using SSH.
-- Create and configure a Linux file system.
-- Mount the EBS volume.
-- Verify storage configuration.
-- Store and retrieve data from the mounted volume.
-- Create an Amazon EBS Snapshot.
-- Validate snapshot functionality by deleting and restoring data.
+![Security Group](./Images/security-group.png)
 
 ---
 
-# 📝 Tasks
+## Task 2: Create a DB Subnet Group
 
-## Task 1: Create a New EBS Volume
+Create a **DB Subnet Group** in **Lab VPC** using two Availability Zones and their corresponding subnets.
 
-Create a new Amazon EBS volume from the AWS Management Console.
-
-**Screenshot**
-
-![Create Volume](./Images/Create-Volume.png)
+![DB Subnet Group](./Images/DB-Subnet-Group.png)
 
 ---
 
-## Task 2: Attach the Volume to an EC2 Instance
+## Task 3: Create an Amazon RDS Instance
 
-Attach the newly created EBS volume to your running Amazon EC2 instance.
+Configure the database with:
 
-**Steps**
+* Engine: **MySQL**
+* Template: **Dev/Test**
+* Deployment: **Multi-AZ**
+* DB Identifier: **lab-db**
+* Security Group: **DB Security Group**
+* Initial Database: **lab**
 
-- Select the created EBS volume.
-- Open **Actions**.
-- Choose **Attach Volume**.
-- Select the target EC2 instance.
-- Attach the volume.
-
-**Screenshot**
-
-![Attach Volume](./Images/Attach-Volume.png)
+![Amazon RDS](./Images/AWS-RDS.png)
 
 ---
 
-## Task 3: Connect to the Amazon EC2 Instance
+## Task 4: Connect the Web Application
 
-Connect to your EC2 instance using SSH.
+Open the EC2 Web Server, configure the RDS connection, and verify the database integration.
 
-**Screenshot**
+### Before
 
-![Connect EC2 Instance](./Images/Connect%20EC2%20Instance.png)
+![Address Book Before](./Images/addressBook-before.png)
 
----
+### After
 
-## Task 4: Create and Configure the File System
-
-Configure the attached EBS volume inside the Linux instance.
-
-### Performed Operations
-
-- View available storage devices.
-- Create an **ext3** file system.
-- Create a mount directory.
-- Mount the EBS volume.
-- Verify the mount configuration.
-- Check available storage after mounting.
-- Create a file on the mounted volume.
-- Write text into the file.
-- Verify the stored data.
-
-### Configuration Screenshots
-
-![Configuration 1](./Images/Config%201.png)
-
-![Configuration 2](./Images/config%202.png)
+![Address Book After](./Images/Address-Edited.png)
 
 ---
 
-## Task 5: Create an Amazon EBS Snapshot
+## Architecture
 
-Create a snapshot of the EBS volume for backup purposes.
-
-**Screenshot**
-
-![Create Snapshot](./Images/create-snapshot.png)
-
-After creating the snapshot, delete the test file to simulate data loss and validate recovery.
-
-**Screenshot**
-
-![Delete File](./Images/Delete-file.png)
+![Scenario](./Images/Scenario.png)
 
 ---
 
-# Linux Commands Used
+## AWS Services
 
-```bash
-lsblk
-sudo mkfs.ext3 /dev/xvdf
-sudo mkdir /mnt/data-store
-sudo mount /dev/xvdf /mnt/data-store
-df -h
-cat /etc/fstab
-echo "Hello World" | sudo tee /mnt/data-store/file.txt
-cat /mnt/data-store/file.txt
-```
-
----
-
-# 📚 AWS Services Used
-
-- Amazon EC2
-- Amazon Elastic Block Store (EBS)
-- Amazon EBS Snapshots
-
----
-
-# Learning Outcomes
-
-After completing this lab, you will understand how to:
-
-- Provision Amazon EBS storage.
-- Attach storage to EC2 instances.
-- Configure Linux file systems.
-- Mount persistent storage.
-- Store persistent data on EBS.
-- Create snapshots for backup and disaster recovery.
+* Amazon EC2
+* Amazon RDS
+* Amazon VPC
+* Security Groups
 
 ---

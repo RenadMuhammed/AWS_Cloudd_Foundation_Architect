@@ -1,92 +1,138 @@
-# Build  VPC and Launch a Web Server
-![VPC](./Images/VPC-Dashboard.png)
+# 🚀 Lab 4: Working with Amazon EBS
 
-## 1. Create a VPC
-### VPC settings
-* Choose VPC and more.
-* Under Name tag auto-generation, keep Auto-generate selected, however change the value from project to lab.
-* Keep the IPv4 CIDR block set to 10.0.0.0/16
-* For Number of Availability Zones, choose 1.
-* For Number of public subnets, keep the 1 setting.
-* For Number of private subnets, keep the 1 setting.
-* Expand the Customize subnets CIDR blocks section
-    * Change Public subnet CIDR block in us-east-1a to 10.0.0.0/24
-    * Change Private subnet CIDR block in us-east-1a to 10.0.1.0/24
-* Set NAT gateways to In 1 AZ.
-* Set VPC endpoints to None.
-* Keep both DNS hostnames and DNS resolution enabled.
+## 📖 Overview
+This lab demonstrates how to create, attach, configure, and manage an **Amazon Elastic Block Store (EBS)** volume for an Amazon EC2 instance. It also covers creating an EBS snapshot for backup and recovery purposes.
 
-![VPC](./Images/viewe-vpc.png)
+---
 
+## 🎯 Objectives
 
-## 2. Create Additional Subnets
-1. Public Subnet
-    * VPC ID:  lab-vpc (select from the menu).
-    * Subnet name: lab-subnet-public2
-    * Availability Zone: Select the second Availability Zone (for example, us-east-1b)
-    * IPv4 CIDR block: 10.0.2.0/24
+By the end of this lab, you will be able to:
 
-![Public Subnet](./Images/Public-SubnetCreated.png)
+- Create a new Amazon EBS volume.
+- Attach the volume to an Amazon EC2 instance.
+- Connect to the EC2 instance using SSH.
+- Create and configure a Linux file system.
+- Mount the EBS volume.
+- Verify storage configuration.
+- Store and retrieve data from the mounted volume.
+- Create an Amazon EBS Snapshot.
+- Validate snapshot functionality by deleting and restoring data.
 
-2. Private Subnet
-    * VPC ID: lab-vpc
-    * Subnet name: lab-subnet-private2
-    * Availability Zone: Select the second Availability Zone (for example, us-east-1b)
-    * IPv4 CIDR block: 10.0.3.0/24
+---
 
-![Public Subnet](./Images/Private-SubnetCreated.png)
+# 📝 Tasks
 
-## 3. Route tables
-1. Select  the lab-rtb-private1-us-east-1a 
-2. Choose the Subnet associations tab
-3. In the Explicit subnet associations panel, choose Edit subnet associations
-4. Leave lab-subnet-private1-us-east-1a selected, but also select  lab-subnet-private2.
-5. Select the  lab-rtb-public route table
-6. Choose the Subnet associations tab.
-7. In the Explicit subnet associations area, choose Edit subnet associations
-8. Leave lab-subnet-public1-us-east-1a selected, but also select  lab-subnet-public2.
+## Task 1: Create a New EBS Volume
 
-## 4. Create a VPC Security Group
-* Security group name: Web Security Group
-* Description: Enable HTTP access
-* VPC: choose the X to remove the currently selected VPC, then from the drop down list choose lab-vpc
-* choose Add rule
-* Configure the following settings:
-    * Type: HTTP
-    * Source: Anywhere-IPv4
-    * Description: Permit web requests
+Create a new Amazon EBS volume from the AWS Management Console.
 
-![Security Group](./Images/SecurityGroupCreated.png)
+**Screenshot**
 
-## 5. Launch a Web Server Instance
-* search for and choose EC2 to open the EC2 console
-* choose Launch instance
-* Give it the name Web Server 1
-* Choose an AMI from which to create the instance:
-    * In the list of available Quick Start AMIs, keep the default Amazon Linux selected. 
-    * Also keep the default Amazon Linux 2023 AMI selected.
-* In the Instance type panel, keep the default t2.micro selected.
-* From the Key pair name menu, select vockey.
-* Configure the Network settings:
-    * Next to Network settings, choose Edit, then configure: 
-    * Network: lab-vpc 
-    * Subnet: lab-subnet-public2 (not Private!)
-    * Auto-assign public IP: Enable
-    * choose  Select existing security group
-    * For Common security groups, select  Web Security Group
-* Configure a script to run on the instance when it launches: 
-    ```
-    #!/bin/bash
-    # Install Apache Web Server and PHP
-    dnf install -y httpd wget php mariadb105-server
-    # Download Lab files
-    wget https://aws-tc-largeobjects.s3.us-west-2.amazonaws.com/CUR-TF-100-ACCLFO-2/2-lab2-vpc/s3/lab-app.zip
-    unzip lab-app.zip -d /var/www/html/
-    # Turn on web server
-    chkconfig httpd on
-    service httpd start
-    ```
-![Web Server](./Images/LaunchInstance.png)
+![Create Volume](./Images/Create-Volume.png)
 
-## Launch Web Server
-![Web Server](./Images/Finish.png)
+---
+
+## Task 2: Attach the Volume to an EC2 Instance
+
+Attach the newly created EBS volume to your running Amazon EC2 instance.
+
+**Steps**
+
+- Select the created EBS volume.
+- Open **Actions**.
+- Choose **Attach Volume**.
+- Select the target EC2 instance.
+- Attach the volume.
+
+**Screenshot**
+
+![Attach Volume](./Images/Attach-Volume.png)
+
+---
+
+## Task 3: Connect to the Amazon EC2 Instance
+
+Connect to your EC2 instance using SSH.
+
+**Screenshot**
+
+![Connect EC2 Instance](./Images/Connect%20EC2%20Instance.png)
+
+---
+
+## Task 4: Create and Configure the File System
+
+Configure the attached EBS volume inside the Linux instance.
+
+### Performed Operations
+
+- View available storage devices.
+- Create an **ext3** file system.
+- Create a mount directory.
+- Mount the EBS volume.
+- Verify the mount configuration.
+- Check available storage after mounting.
+- Create a file on the mounted volume.
+- Write text into the file.
+- Verify the stored data.
+
+### Configuration Screenshots
+
+![Configuration 1](./Images/Config%201.png)
+
+![Configuration 2](./Images/config%202.png)
+
+---
+
+## Task 5: Create an Amazon EBS Snapshot
+
+Create a snapshot of the EBS volume for backup purposes.
+
+**Screenshot**
+
+![Create Snapshot](./Images/create-snapshot.png)
+
+After creating the snapshot, delete the test file to simulate data loss and validate recovery.
+
+**Screenshot**
+
+![Delete File](./Images/Delete-file.png)
+
+---
+
+# Linux Commands Used
+
+```bash
+lsblk
+sudo mkfs.ext3 /dev/xvdf
+sudo mkdir /mnt/data-store
+sudo mount /dev/xvdf /mnt/data-store
+df -h
+cat /etc/fstab
+echo "Hello World" | sudo tee /mnt/data-store/file.txt
+cat /mnt/data-store/file.txt
+```
+
+---
+
+# 📚 AWS Services Used
+
+- Amazon EC2
+- Amazon Elastic Block Store (EBS)
+- Amazon EBS Snapshots
+
+---
+
+# Learning Outcomes
+
+After completing this lab, you will understand how to:
+
+- Provision Amazon EBS storage.
+- Attach storage to EC2 instances.
+- Configure Linux file systems.
+- Mount persistent storage.
+- Store persistent data on EBS.
+- Create snapshots for backup and disaster recovery.
+
+---

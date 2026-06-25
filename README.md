@@ -1,67 +1,55 @@
-# 🚀 Lab 5: Amazon RDS
+# 🚀 Lab 6: Scale and Load Balance Your Architecture
 
 ## 📖 Overview
 
-This lab demonstrates how to create and configure an **Amazon RDS MySQL** database and connect it to an Amazon EC2 web application.
+This lab demonstrates how to improve application availability and scalability using **Amazon EC2 Auto Scaling** and an **Application Load Balancer (ALB)**.
 
 ---
 
-## Task 1: Create a Security Group
+## Task 1: Create an AMI
 
-Create a **DB Security Group** and allow **MySQL (3306)** access from the **Web Security Group**.
+Create an Amazon Machine Image (AMI) from the existing EC2 instance to use in the launch template.
 
-![Security Group](./Images/security-group.png)
-
----
-
-## Task 2: Create a DB Subnet Group
-
-Create a **DB Subnet Group** in **Lab VPC** using two Availability Zones and their corresponding subnets.
-
-![DB Subnet Group](./Images/DB-Subnet-Group.png)
+![Create Image](./Images/Create-Image.png)
 
 ---
 
-## Task 3: Create an Amazon RDS Instance
+## Task 2: Create a Target Group & Load Balancer
 
-Configure the database with:
+Create a target group, then configure an Application Load Balancer to distribute incoming traffic.
 
-* Engine: **MySQL**
-* Template: **Dev/Test**
-* Deployment: **Multi-AZ**
-* DB Identifier: **lab-db**
-* Security Group: **DB Security Group**
-* Initial Database: **lab**
+### Target Group
 
-![Amazon RDS](./Images/AWS-RDS.png)
+![Create Target Group](./Images/create-target-group%201.png)
 
----
+![Create Target Group](./Images/create-target-group%202.png)
 
-## Task 4: Connect the Web Application
+### Application Load Balancer
 
-Open the EC2 Web Server, configure the RDS connection, and verify the database integration.
-
-### Before
-
-![Address Book Before](./Images/addressBook-before.png)
-
-### After
-
-![Address Book After](./Images/Address-Edited.png)
+![Create Load Balancer](./Images/Create%20Load%20Balancer.png)
 
 ---
 
-## Architecture
+## Task 3: Create a Launch Template & Auto Scaling Group
 
-![Scenario](./Images/Scenario.png)
+Create a Launch Template using the AMI, then create an Auto Scaling Group to automatically launch and manage EC2 instances.
+
+### Launch Template Configuration
+
+![Launch Template](./Images/lab-config.png)
+
+### Auto Scaling Group
+
+![Auto Scaling Group](./Images/Auto%20Scaling%20Group.png)
 
 ---
 
 ## AWS Services
 
 * Amazon EC2
-* Amazon RDS
-* Amazon VPC
-* Security Groups
+* Amazon Machine Image (AMI)
+* Elastic Load Balancing (ALB)
+* Auto Scaling
+* Target Groups
 
 ---
